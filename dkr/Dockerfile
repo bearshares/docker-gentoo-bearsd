@@ -40,13 +40,13 @@ RUN export CXXFLAGS='-Os -pipe'; cd /root; BOOST_ROOT=/usr/local; \
     rm -rf boost* \
     exit 0
 
-RUN cd /root; git clone https://github.com/steemit/steem -b v0.19.0
-RUN cd /root/steem; git submodule update --init --recursive
-RUN cd /root/steem; mkdir build
-RUN cd /root/steem/build; export CXXFLAGS='-Os -pipe'; cmake -DCMAKE_BUILD_TYPE=Release ..
-RUN cd /root/steem/build; make -j$(nproc) steemd
-RUN cd /root/steem/build; make -j$(nproc) cli_wallet
-RUN cd /root/steem/build; make install
+RUN cd /root; git clone https://github.com/bearshares/bears.git
+RUN cd /root/bears; git submodule update --init --recursive
+RUN cd /root/bears; mkdir build
+RUN cd /root/bears/build; export CXXFLAGS='-Os -pipe'; cmake -DCMAKE_BUILD_TYPE=Release ..
+RUN cd /root/bears/build; make -j$(nproc) bearsd
+RUN cd /root/bears/build; make -j$(nproc) cli_wallet
+RUN cd /root/bears/build; make install
 
 RUN emerge zsh
 
@@ -54,4 +54,4 @@ VOLUME /work
 WORKDIR /work                  
 
 #CMD tail -f /dev/null #
-CMD steemd 1>>/work/steemd.log 2>>/work/steemd.log
+CMD bearsd 1>>/work/bearsd.log 2>>/work/bearsd.log

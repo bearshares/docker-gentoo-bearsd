@@ -1,6 +1,6 @@
 #!/bin/bash #NOPRINT
-export NAME="docker-gentoo-steemd" #NOPRINT
-export DATADIR="`dirname $(realpath $(dirname -- $0))`" #NOPRINT
+export NAME="docker-gentoo-bearsd" #NOPRINT
+export DATADIR="`pwd`" #NOPRINT
 source $DATADIR/config #NOPRINT
 echo "l0k1's compleat witness management system v0.1" #NOPRINT
 echo #NOPRINT
@@ -20,23 +20,23 @@ alias   .start="sudo docker start $NAME"
          ### [ start the container that was previously '.stop'ed ]
 alias    .stop="sudo docker stop $NAME"
          ### [ stop the container, start it again with '.start' ]
-alias  .replay="sudo docker stop $NAME;sudo docker run -v $DATADIR/data:/work -d=true $NAME sh -c 'steemd --replay 1>>/work/steemd.log 2>>/work/steemd.log'"
+alias  .replay="sudo docker stop $NAME;sudo docker run -v $DATADIR/data:/work -d=true $NAME sh -c 'bearsd --replay 1>>/work/bearsd.log 2>>/work/bearsd.log'"
          ### [ replay blockchain (for after upgrade, after unclean shutdown or starting from recent block_log) ]
-alias   .steem="sudo docker exec -it $NAME steemd"
-         ### [ start up steemd inside the container attached to current terminal ]
-alias  .status="ps avx|grep steemd|grep -v grep|grep -v zsh|grep -v docker"
-         ### [ display process information about all steemd's running on this server
+alias   .steem="sudo docker exec -it $NAME bearsd"
+         ### [ start up bearsd inside the container attached to current terminal ]
+alias  .status="ps avx|grep bearsd|grep -v grep|grep -v zsh|grep -v docker"
+         ### [ display process information about all bearsd's running on this server
 alias   .enter="sudo docker exec -it $NAME zsh"
          ### [ open a shell inside the container ]
-alias     .log="sudo tail -f $DATADIR/data/steemd.log"
+alias     .log="sudo tail -f $DATADIR/data/bearsd.log"
          ### [ show the current output from the primary process in the container ]
-alias   .build="sudo docker build -t $NAME $DATADIR/dkr"
+alias   .build="sudo docker build -t $NAME $DATADIR/"
          ### [ build the container from the Dockerfile ]
 alias      .rm="sudo docker rm $NAME"
          ### [ remove the current container (for rebuilding) ]
-alias .editdkr="nano $DATADIR/dkr/Dockerfile"
+alias .editdkr="nano $DATADIR/Dockerfile"
          ### [ edit the Dockerfile ]
-alias  .editsh="nano $DATADIR/dkr/init.sh;source $DATADIR/dkr/init.sh"
+alias  .editsh="nano $DATADIR/init.sh;source $DATADIR/init.sh"
          ### [ edit init.sh with nano then reload ]
 alias .editcfg="nano $DATADIR/config"
          ### [ edit environment variables ]
@@ -50,5 +50,5 @@ alias  .screen="screen -r" # monitor or feeder <
          ### [ view feeder or monitor, name in the parameter. Ctrl-A then D to exit, Ctrl-C to kill process ]
 alias   .dirty="$DATADIR/dirtycache.sh"
          ### [ set kernel disk cache parameters to decrease disk I/O ]
-alias  halp="sed 's/\$NAME/$NAME/g' $DATADIR/dkr/init.sh|sed 's#\$DATADIR#$DATADIR#g'|grep -v NOPRINT|sed 's/alias //g'|sed 's/=\"/     \"/g'|sed 's/#/>/g'|less"
+alias  halp="sed 's/\$NAME/$NAME/g' $DATADIR/init.sh|sed 's#\$DATADIR#$DATADIR#g'|grep -v NOPRINT|sed 's/alias //g'|sed 's/=\"/     \"/g'|sed 's/#/>/g'|less"
 ######### hit the 'q' key to exit help viewer <<<<<<<<<
