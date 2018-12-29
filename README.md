@@ -1,5 +1,5 @@
-# docker-gentoo-steemd
-`steemd` built inside a Docker container using a Gentoo base with size optimization
+# docker-gentoo-bearsd
+`bearsd` built inside a Docker container using a Gentoo base with size optimization
 
 In the `dkr` directory is a short shell script that sets some handy aliases, which you
 will need to run this docker container:
@@ -31,7 +31,7 @@ basic procedure to using this, beyond what the help in the `init.sh` provides:
 To build the image, `.build` will run the procedure defined in the `Dockerfile`. Then
 there will be an image you can see with `dkr ps -a` (probably at the top of the output).
 
-To get the image running, type `.run` (this will also start the `steemd` which, with an empty `data`
+To get the image running, type `.run` (this will also start the `bearsd` which, with an empty `data`
 folder will begin syncing from scratch, and use an empty configuration). There is
 a file in `data/witness_node_data_dir/` called config.ini.example which will help
 you create a basic witness configuration, I have annotated it with comments to
@@ -45,7 +45,7 @@ to remove the container. Then you will have to `.build` again. This is what you
 want to do if you edit the `Dockerfile`.
 
 `.stop` will stop a running container, `.start` will start it again. `.log` will
-show you the log file output, which is created in `data/steemd.sh` and is there
+show you the log file output, which is created in `data/bearsd.sh` and is there
 so that other scripts can monitor and parse the log file. If you use the 
 `sudo docker <image name> logs` file instead, you will see a notice that the
 logs are going to a log file and how to view them as they come down.
@@ -89,9 +89,9 @@ efficient.
 The configuration of the Gentoo system inside the container is built with `-Os` 
 compiler optimisation flag enabled, so that most of the support libraries are probably
 smaller and faster than the ones that the host system would use. Neither Boost nor 
-steemd is optimised this way, however. I may amend this in the future, but for
+bearsd is optimised this way, however. I may amend this in the future, but for
 now, this container is fully working and has a side benefit that following the 
-commands inside the Dockerfile you can also build `steemd` to run on a Gentoo server.
+commands inside the Dockerfile you can also build `bearsd` to run on a Gentoo server.
 
 ## Prerequisites
 
