@@ -50,6 +50,8 @@ RUN cd bears/build; \
 RUN cd bears/build; \
     make install  # defaults to /usr/local
 
+RUN apt install -y zsh
+
 VOLUME /work
 WORKDIR /work                  
 
