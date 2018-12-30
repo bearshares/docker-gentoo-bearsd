@@ -1,57 +1,57 @@
-FROM gentoo/stage3-amd64
+FROM ubuntu:16.04
 
-RUN cd /usr ; wget -c http://distfiles.gentoo.org/snapshots/portage-latest.tar.xz;\
-    tar xvf portage-latest.tar.xz; rm portage-latest.tar.xz
+RUN apt update
+RUN apt install -y build-essential 
+RUN apt install -y automake 
+RUN apt install -y cmake 
+RUN apt install -y g++ 
+RUN apt install -y git 
+RUN apt install -y libbz2-dev 
+RUN apt install -y libsnappy-dev 
+RUN apt install -y libssl-dev 
+RUN apt install -y libtool 
+RUN apt install -y make 
+RUN apt install -y pkg-config 
+RUN apt install -y python3 
+RUN apt install -y python3-jinja2
 
-RUN emerge --sync
+# Boost packages (also required)
+RUN apt install -y libboost-chrono-dev 
+RUN apt install -y libboost-context-dev 
+RUN apt install -y libboost-coroutine-dev 
+RUN apt install -y libboost-date-time-dev 
+RUN apt install -y libboost-filesystem-dev 
+RUN apt install -y libboost-iostreams-dev 
+RUN apt install -y libboost-locale-dev 
+RUN apt install -y libboost-program-options-dev 
+RUN apt install -y libboost-serialization-dev 
+RUN apt install -y libboost-signals-dev 
+RUN apt install -y libboost-system-dev 
+RUN apt install -y libboost-test-dev 
+RUN apt install -y libboost-thread-dev
 
-# Set compiler optimisation for minimising code size
-RUN sed -i 's/CFLAGS=\"-O2 -pipe\"/CFLAGS=\"-Os -pipe\"/g' /etc/portage/make.conf
+# Optional packages (not required, but will make a nicer experience)
+RUN apt install -y doxygen 
+RUN apt install -y libncurses5-dev 
+RUN apt install -y libreadline-dev 
+RUN apt install -y perl
 
-# Enable the elliptic curve functions in openssl
-RUN sed -i 's/bindist/-bindist context python tools/g' /etc/portage/make.conf
-
-RUN emerge --update world
-
-RUN emerge -v openssl:0 openssh
-
-RUN emerge dev-vcs/git 
-RUN emerge autoconf 
-RUN emerge cmake 
-RUN emerge libtool 
-RUN emerge make 
-RUN emerge pkg-config 
-RUN emerge app-arch/bzip2
-RUN emerge doxygen 
-RUN emerge ncurses 
-RUN emerge readline 
-RUN emerge perl 
-RUN emerge python
-
-# Build Boost from version 1.57.0 snapshot
-RUN export CXXFLAGS='-Os -pipe'; cd /root; BOOST_ROOT=/usr/local; \
-    URL='https://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.bz2/download'; \
-    wget -c "$URL" -O boost_1_60_0.tar.bz2; \
-    tar xjf boost_1_60_0.tar.bz2; \
-    cd boost_1_60_0; \
-    ./bootstrap.sh "--prefix=$BOOST_ROOT"; \
-    ./b2 -j$(nproc) install; \
-    cd ..\
-    rm -rf boost* \
-    exit 0
-
-RUN cd /root; git clone https://github.com/bearshares/bears.git
-RUN cd /root/bears; git submodule update --init --recursive
-RUN cd /root/bears; mkdir build
-RUN cd /root/bears/build; export CXXFLAGS='-Os -pipe'; cmake -DCMAKE_BUILD_TYPE=Release ..
-RUN cd /root/bears/build; make -j$(nproc) bearsd
-RUN cd /root/bears/build; make -j$(nproc) cli_wallet
-RUN cd /root/bears/build; make install
-
-RUN emerge zsh
+RUN git clone https://github.com/bearshares/bears
+RUN cd bears; \
+    git submodule update --init --recursive; \
+    mkdir build
+RUN cd bears/build; \
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+RUN cd bears/build; \
+    make -j$(nproc) bearsd
+RUN cd bears/build; \
+    make -j$(nproc) cli_wallet
+# optional
+RUN cd bears/build; \
+    make install  # defaults to /usr/local
 
 VOLUME /work
 WORKDIR /work                  
 
-#CMD tail -f /dev/null #
-CMD bearsd 1>>/work/bearsd.log 2>>/work/bearsd.log
+CMD tail -f /dev/null #
+# CMD bearsd 1>>/work/bearsd.log 2>>/work/bearsd.log
